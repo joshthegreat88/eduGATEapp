@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GATE Study App</title>
+    <style>
+        /* General Reset */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        .header {
+            background-color: #4A90E2;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 120px;
+            left: 0;
+            width: 200px;
+            background-color: #3b5998;
+            height: 100%;
+            padding-top: 20px;
+            color: white;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background-color: #4A90E2;
+        }
+        
+        .section h2 {
+            font-size: 2em;
+            color: #2d4a7e;
+            margin-top: 0;
+        }
+
+        .section p {
+            font-size: 1.15em;
+            color: #666;
+        }
+
+        /* Styling for the feature sections */
+        .feature-box h3 {
+            color: #d87d5a;
+            margin-bottom: 10px;
+        }
+
+        .feature-box ul {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .feature-box li {
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        /* Adjust the button on smaller screens */
+        @media (max-width: 768px) {
+            .cta-button {
+                font-size: 1.1em;
+                padding: 10px 20px;
+            }
+        }
+        main {
+            margin-left: 220px;
+            padding: 20px;
+            flex: 1;
+        }
+
+        .section {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section:not(.hidden) {
+            display: block;
+        }
+         /* Flashcards Styling */
+         #flashcards-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70vh; /* Flashcard container takes half of the page */
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            width: 300px;
+            height: 400px;
+            background-color: #4A90E2;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .flashcard .front,
+        .flashcard .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+        }
+
+        .flashcard .front {
+            background-color: #4A90E2;
+            color: white;
+        }
+
+        .flashcard .back {
+            background-color: #f39c12;
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Button Styling */
+        .flashcard-btn-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .flashcard-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .flashcard-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Quiz Styling */
+        #quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .options-container button {
+            display: block;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .options-container button:hover {
+            background-color: #357ABD;
+        }
+
+        /* Navigation Buttons Styling */
+        .quiz-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .quiz-nav-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        #skip-button {
+            background-color: #FF5733;
+        }
+
+        #back-button {
+            background-color: #808080;
+        }
+
+        #submit-button {
+            background-color: #28a745;
+        }
+
+        #skip-button:hover {
+            background-color: #FF4500;
+        }
+
+        #back-button:hover {
+            background-color: #696969;
+        }
+
+        #submit-button:hover {
+            background-color: #218838;
+        }
+
+        /* Timer Styling */
+        #timer {
+            font-size: 20px;
+            color: red;
+            margin-bottom: 20px;
+        }
+
+        /* Progress Tracker Styling */
+        #progress-tracker {
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        /* Review Section Styling */
+        #review-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .review-item {
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .correct {
+            background-color: #28a745; /* Green */
+        }
+
+        .incorrect {
+            background-color: #dc3545; /* Red */
+        }
+
+        .skipped {
+            background-color: #ffc107; /* Yellow */
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Welcome to Your Personalized GATE Study Portal</h1>
+        <p class="tagline">Your Journey to Success Begins Here</p>
+    </header>
+
+    <aside class="sidebar">
+        <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+        <a href="#" onclick="showSection1('flashcards')">Flashcards</a>
+        <a href="#" onclick="showSection('quizzes')">Quizzes</a>
+        <!-- <a href="#" onclick="showSection('schedule')">Scheduled Tests</a> -->
+        <a href="#" onclick="showSection('progress')">Your Progress</a>
+    </aside>
+
+    <main>
+        <!-- <section id="dashboard" class="section">Welcome back! Here is your progress overview...</section> -->
+        
+<section id="dashboard" class="section">
+    <h2>Welcome to Your Learning Hub</h2>
+    <div class="content">
+        <h2>Section 1: Introduction to EduGate</h2>
+        <p>Welcome to EduGate, the ultimate educational platform designed to guide you through your learning journey with personalized features and powerful tools to maximize your academic success. Whether you’re preparing for exams, mastering new subjects, or looking to track your progress, EduGate provides all the resources you need to excel, all in one place.</p>
+        <p>At EduGate, we understand the challenges of modern learning. The fast-paced world demands efficient study methods, flexibility, and personalized approaches that cater to your unique needs. That's why we’ve developed a comprehensive platform that combines cutting-edge artificial intelligence with traditional study aids like flashcards and quizzes. Our goal is to provide you with a one-stop solution to help you achieve academic excellence — whether you're a student preparing for exams, a professional enhancing your knowledge, or anyone who wants to learn and grow.</p>
+
+        <h2>Section 2: Key Features</h2>
+        <p>Here’s how EduGate empowers you on your educational journey:</p>
+
+        <div class="feature-box">
+            <h3>1. AI-Powered Chatbot Assistance</h3>
+            <p>EduGate’s intelligent chatbot is your dedicated learning assistant, always available to provide personalized help, answer your questions, and guide you through your studies. Powered by advanced artificial intelligence, the EduGate chatbot offers:</p>
+            <ul>
+                <li>Instant Help and Doubt Resolution: Simply ask your questions, and the chatbot will provide accurate, detailed explanations, ensuring you fully understand your lessons.</li>
+                <li>Subject-Specific Support: Whether you're studying mathematics, science, history, or any other subject, our AI chatbot is trained to assist you with a wide range of topics, adapting to your personal learning pace.</li>
+                <li>24/7 Availability: Your virtual tutor is available around the clock. No matter when you’re studying, EduGate’s AI is always ready to help you with doubts, guidance, or resources.</li>
+                <li>Interactive Conversations: Engage in conversations with the AI to test your knowledge, clarify concepts, and receive valuable insights on how to approach difficult topics.</li>
+            </ul>
+        </div>
+
+        <div class="feature-box">
+            <h3>2. Flashcards: Effective Learning at Your Fingertips</h3>
+            <p>Flashcards are a proven method for active recall, which has been shown to improve memory retention. With EduGate, flashcards are seamlessly integrated into your learning process:</p>
+            <ul>
+                <li>Customizable Flashcards: Create your own set of flashcards based on your notes, past questions, or any content you need to memorize. Organize them by subject, topic, or difficulty level, and revise them anytime, anywhere.</li>
+                <li>Pre-Built Flashcards: We provide a vast library of pre-built flashcards for various subjects, from primary school to university level. These flashcards are designed to help you review key concepts and prepare for exams effectively.</li>
+                <li>Smart Review System: EduGate’s flashcard system uses spaced repetition algorithms to ensure that you review the material at optimal intervals, boosting your chances of retaining information for the long term.</li>
+                <li>Interactive Learning: Our flashcards feature interactive quizzes, images, and diagrams to enhance your learning experience, making it both engaging and effective.</li>
+            </ul>
+        </div>
+
+        <div class="feature-box">
+            <h3>3. Quizzes from Previous Year Question Papers</h3>
+            <p>One of the most powerful ways to prepare for exams is by practicing past question papers. EduGate provides a collection of quizzes based on previous year’s exam papers, offering the following benefits:</p>
+            <ul>
+                <li>Authentic Exam Experience: Take quizzes that mirror the format, difficulty, and structure of actual exams. This helps you familiarize yourself with the exam format and test your knowledge under realistic conditions.</li>
+                <li>Timed Quizzes: Simulate real exam scenarios with timed quizzes. This helps you improve your time management skills, ensuring that you can complete the exam within the allotted time.</li>
+                <li>Instant Feedback: Receive instant feedback on your quiz performance, with detailed explanations for each question. This allows you to learn from your mistakes and improve your understanding of key concepts.</li>
+                <li>Track Your Progress: Monitor your quiz performance over time and identify areas where you need improvement. EduGate’s system analyzes your results and offers personalized recommendations to help you focus on weak areas.</li>
+            </ul>
+        </div>
+
+        <div class="feature-box">
+            <h3>4. Offline Resources: Learning Without Boundaries</h3>
+            <p>Learning shouldn't be limited by your internet connection. EduGate provides offline resources, so you can continue your studies even when you're not connected to the internet. With EduGate's offline resources, you can:</p>
+            <ul>
+                <li>Download Study Materials: Access a variety of downloadable study materials, including notes, PDFs, e-books, and more. Whether you’re on a commute or in a remote area, you can continue studying without an internet connection.</li>
+                <li>Offline Flashcards and Quizzes: Use your downloaded flashcards and quizzes to study anytime, anywhere. Our platform syncs automatically once you're back online, ensuring all your progress is saved.</li>
+                <li>Offline Progress Tracking: Track your learning progress offline, including your quiz scores, flashcard reviews, and study hours. All your data is synchronized once you reconnect to the internet, so you never lose track of your learning journey.</li>
+            </ul>
+        </div>
+
+        <a href="#" class="cta-button">Start Learning Now</a>
+    </div>
+</section>
+        <section id="flashcards" class="section hidden">
+            <h2>Flashcards</h2>
+            <div id="flashcards-container"></div>
+            <div class="flashcard-btn-container">
+                <button class="flashcard-btn" onclick="prevFlashcard()">Previous</button>
+                <button class="flashcard-btn" onclick="nextFlashcard()">Next</button>
+            </div>
+        </section>
+
+        <section id="quizzes" class="section hidden">
+            <h2>Take Quiz on Computer Science Year 2024</h2>
+            <button onclick="startQuiz()">Start Quiz</button>
+            <div id="quiz-container" class="hidden">
+                <div id="timer">Time left: <span id="time-left">60</span> seconds</div>
+                <div class="question-container">
+                    <h3 id="quiz-question">Question will be displayed here</h3>
+                    <div class="options-container">
+                        <button onclick="selectAnswer(0)">Option 1</button>
+                        <button onclick="selectAnswer(1)">Option 2</button>
+                        <button onclick="selectAnswer(2)">Option 3</button>
+                        <button onclick="selectAnswer(3)">Option 4</button>
+                    </div>
+                </div>
+                <div class="quiz-nav-buttons">
+                    <button id="back-button" onclick="goBack()">Back</button>
+                    <button id="skip-button" onclick="skipQuestion()">Skip</button>
+                    <button id="submit-button" onclick="endQuiz()">Submit</button>
+                </div>
+            </div>
+            <div id="quiz-result" class="hidden">
+                <h3>Your score: <span id="score"></span>/10</h3>
+                <h4>Review:</h4>
+                <ul id="review-list"></ul>
+            </div>
+        </section>
+
+        <!-- <section id="schedule" class="section hidden">Plan and schedule your tests to stay on track.</section> -->
+        <section id="progress" class="section hidden">
+            <h2>Your Progress</h2>
+            <p id="progress-tracker">Progress will be displayed here.</p>
+        </section>
+    </main>
+
+    <script> 
+
+    let flashcards = [];
+    let currentFlashcardIndex = 0;
+
+    // Fetch flashcards from the server
+    async function loadFlashcards() {
+        try {
+            const response = await fetch('http://localhost:3000/api/flashcards');
+            flashcards = await response.json();
+            console.log(flashcards); // Log flashcards to check the data
+            displayFlashcard(currentFlashcardIndex);  // Display the first flashcard
+        } catch (error) {
+            console.error('Error fetching flashcards:', error);
+        }
+    }
+
+    // Display the flashcard at the given index
+    function displayFlashcard(index) {
+        const container = document.getElementById('flashcards-container');
+        container.innerHTML = ''; // Clear existing flashcard
+
+        if (index >= 0 && index < flashcards.length) {
+            const flashcard = flashcards[index];
+
+            const card = document.createElement('div');
+            card.className = 'flashcard';
+            card.innerHTML = `
+                <div class="front">${flashcard.question}</div>
+                <div class="back">${flashcard.answer}</div>
+            `;
+            card.style.transform = 'rotateY(0deg)';
+            card.addEventListener('click', () => flipFlashcard(card));
+
+            container.appendChild(card);
+        }
+    }
+
+    // Flip the flashcard to show the answer
+    function flipFlashcard(card) {
+        if (card.style.transform === 'rotateY(180deg)') {
+            card.style.transform = 'rotateY(0deg)';
+        } else {
+            card.style.transform = 'rotateY(180deg)';
+        }
+    }
+
+    // Go to the next flashcard
+    function nextFlashcard() {
+        if (currentFlashcardIndex < flashcards.length - 1) {
+            currentFlashcardIndex++;
+            displayFlashcard(currentFlashcardIndex);
+        }
+    }
+
+    // Go to the previous flashcard
+    function prevFlashcard() {
+        if (currentFlashcardIndex > 0) {
+            currentFlashcardIndex--;
+            displayFlashcard(currentFlashcardIndex);
+        }
+    }
+
+    // Load flashcards when the section is shown
+    function showSection1(sectionId) {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+            section.classList.add('hidden');
+        });
+        document.getElementById(sectionId).classList.remove('hidden');
+
+        if (sectionId === 'flashcards') {
+            loadFlashcards(); // Load flashcards when the section is shown
+        }}
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 60;
+        let skippedQuestions = [];
+        let reviewList = [];
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        async function startQuiz() {
+            try {
+                const response = await fetch('http://localhost:3000/api/quiz-questions');
+                questions = await response.json();
+                currentQuestionIndex = 0;
+                score = 0;
+                skippedQuestions = [];
+                reviewList = [];
+                document.getElementById('quiz-container').classList.remove('hidden');
+                document.getElementById('quiz-result').classList.add('hidden');
+                startTimer();
+                showNextQuestion();
+            } catch (error) {
+                console.error('Error fetching quiz questions:', error);
+            }
+        }
+
+        function showNextQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const currentQuestion = questions[currentQuestionIndex];
+                document.getElementById('quiz-question').innerText = currentQuestion.question;
+                const options = document.querySelectorAll('.options-container button');
+                options.forEach((button, index) => {
+                    button.innerText = currentQuestion.options[index];
+                    button.disabled = false;
+                });
+            } else {
+                endQuiz();
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+            if (currentQuestion.answer === currentQuestion.options[selectedIndex]) {
+                score++;
+                reviewList.push({ question: currentQuestion.question, selected: currentQuestion.options[selectedIndex], correct: currentQuestion.answer, correctAnswer: true });
+            } else {
+                reviewList.push({ question: currentQuestion.question, selected: currentQuestion.options[selectedIndex], correct: currentQuestion.answer, correctAnswer: false });
+            }
+            currentQuestionIndex++;
+            showNextQuestion();
+        }
+
+        function skipQuestion() {
+            skippedQuestions.push(currentQuestionIndex);
+            reviewList.push({ question: questions[currentQuestionIndex].question, selected: null, correct: questions[currentQuestionIndex].answer, skipped: true });
+            currentQuestionIndex++;
+            showNextQuestion();
+        }
+
+        function goBack() {
+            if (currentQuestionIndex > 0) currentQuestionIndex--;
+            showNextQuestion();
+        }
+
+        function endQuiz() {
+            clearInterval(timer);
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+            document.getElementById('score').innerText = score;
+            updateProgress();
+            displayReview();
+        }
+
+        function startTimer() {
+            timeLeft = 60;
+            document.getElementById('time-left').innerText = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time-left').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateProgress() {
+            const progressTracker = document.getElementById('progress-tracker');
+            progressTracker.innerText = `Last Quiz Score: ${score}/10`;
+        }
+
+        function displayReview() {
+            const reviewListEl = document.getElementById('review-list');
+            reviewListEl.innerHTML = '';
+            reviewList.forEach((item) => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('review-item');
+                if (item.correctAnswer) {
+                    listItem.classList.add('correct');
+                    listItem.innerHTML = `<strong>Correct Question:</strong> ${item.question}<br><strong>Your Answer:</strong> ${item.selected}`;
+                } else if (item.skipped) {
+                    listItem.classList.add('skipped');
+                    listItem.innerHTML = `<strong>Skipped Question:</strong> ${item.question}<br><strong>Correct Answer:</strong> ${item.correct}`;
+                } else {
+                    listItem.classList.add('incorrect');
+                    listItem.innerHTML = `<strong>Incorrect Question:</strong> ${item.question}<br><strong>Your Answer:</strong> ${item.selected}<br><strong>Correct Answer:</strong> ${item.correct}`;
+                }
+                reviewListEl.appendChild(listItem);
+            });
+        }
+    </script>
+<script src="https://widget.cxgenie.ai/widget.js" data-aid="9a2df5c7-5870-43da-b822-c6b71e9eeaf0" data-lang="en"></script>
+</body>
+</html>
